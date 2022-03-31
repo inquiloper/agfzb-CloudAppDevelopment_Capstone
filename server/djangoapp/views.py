@@ -10,11 +10,10 @@ from datetime import datetime
 import logging
 import json
 
+from django.urls import reverse
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
-
-# Create your views here.
 
 
 # Create an `about` view to render a static about page
@@ -25,17 +24,36 @@ def about(request):
 # Create a `contact` view to return a static contact page
 def contact(request):
     return render(request, 'djangoapp/contact.html')
-# Create a `login_request` view to handle sign in request
-# def login_request(request):
-# ...
 
+def registration(request):
+    return render(request, 'djangoapp/registration.html')
+
+# Create a `login_request` view to handle sign in request
+def login_request(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request=request, user=user)
+        return redirect(reverse('djangoapp:index'))
+    else:
+        return redirect(reverse('djangoapp:index'))
+    
 # Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+def logout_request(request):
+    logout(request=request)
+    return redirect(reverse('djangoapp:index'))
 
 # Create a `registration_request` view to handle sign up request
-# def registration_request(request):
-# ...
+def registration_request(request):
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    username = request.POST['username']
+    password = request.POST['password']
+    
+    user = User.objects.create_user(username, password=password, first_name=first_name, last_name=last_name)
+    user.save()
+    return redirect(reverse('djangoapp:index'))
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
