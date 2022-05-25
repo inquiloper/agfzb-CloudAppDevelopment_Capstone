@@ -87,7 +87,7 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(text):
     url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/2a47a5ec-fbcd-484f-bdab-2f317742f64f" 
-    api_key = "MKBGCyXVClndOtgo5wdESQO1HypEM_uX5ZjoW73I6L_U" 
+    api_key = "" 
 
     authenticator = IAMAuthenticator(api_key) 
 
