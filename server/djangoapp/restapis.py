@@ -12,7 +12,7 @@ from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions, SentimentOptions
 
 def get_request(url, **kwargs):
-    print(kwargs)
+    print("Params: "+str(kwargs))
     print("GET from {}".format(url))
     try:
         response = requests.get(url, headers={'Content-Type': 'application/json'}, params=kwargs)
@@ -42,7 +42,11 @@ def post_request(url, json_payload, **kwargs):
 
 def get_dealers_from_cf(url, **kwargs):
     results = []
-    json_result = get_request(url)
+    if 'dealerId' in kwargs:
+        json_result = get_request(url, dealerId=kwargs['dealerId'])
+    else:
+        json_result = get_request(url)
+    
     if json_result:
         dealers = json_result['data']
         for dealer in dealers:
@@ -76,7 +80,7 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
                 car_model = review['car_model'],
                 car_year = review['car_year'],
                 sentiment = analyze_review_sentiments(review['review']),
-                id = review['id']
+                id = review['_id']
             )
             results.append(review_obj)
     return results
@@ -95,15 +99,18 @@ def analyze_review_sentiments(text):
 
     natural_language_understanding.set_service_url(url) 
 
-    response = natural_language_understanding.analyze(
-        text=text ,
-        features=Features(
-            sentiment=SentimentOptions(
-                targets=[text]
-                )
-            )).get_result() 
+    try:
+        response = natural_language_understanding.analyze(
+            text=text ,
+            features=Features(
+                sentiment=SentimentOptions(
+                    targets=[text]
+                    )
+                )).get_result() 
 
-    label=json.dumps(response, indent=2) 
+        label=json.dumps(response, indent=2) 
 
-    label = response['sentiment']['document']['label']
-    return label
+        label = response['sentiment']['document']['label']
+        return label
+    except Exception as e:
+        print("Error analyzing the sentiment of: " + text+ " "+str(e))

@@ -27,6 +27,15 @@ async function main(params) {
                 }
             );
             rows = results.docs;
+        } else if (params.dealerId) {
+            results = await db.find(
+                {
+                    "selector": {
+                        "id": {"$eq": params.dealerId}
+                    }   
+                }
+            );
+            rows = results.docs;
         } else {
             results = await db.list({include_docs: true});
             results.rows.forEach(async (row) => {
