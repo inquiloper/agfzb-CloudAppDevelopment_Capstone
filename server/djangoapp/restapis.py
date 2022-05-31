@@ -1,6 +1,9 @@
-from curses import KEY_A1
 import requests
 import json
+import environ
+
+env = environ.Env()
+
 # import related models here
 from requests.auth import HTTPBasicAuth
 
@@ -91,7 +94,7 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(text):
     url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/2a47a5ec-fbcd-484f-bdab-2f317742f64f" 
-    api_key = "" 
+    api_key = env("WATSON_NLA_APIKEY")
 
     authenticator = IAMAuthenticator(api_key) 
 
